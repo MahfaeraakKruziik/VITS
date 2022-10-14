@@ -1,4 +1,5 @@
 model_name = "MAHFAERAC"
+copy_target = "COPY_TARGET"
 
 import os
 import json
@@ -14,6 +15,8 @@ import torch.multiprocessing as mp
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.cuda.amp import autocast, GradScaler
+from shutil import copy
+import os
 
 import commons
 import utils
@@ -226,6 +229,13 @@ def train_and_evaluate(rank, epoch, hps, nets, optims, schedulers, scaler, loade
         evaluate(hps, net_g, eval_loader, writer_eval)
         utils.save_checkpoint(net_g, optim_g, hps.train.learning_rate, epoch, os.path.join(hps.model_dir, model_name+"_"+"G_{}.pth".format(global_step)))
         utils.save_checkpoint(net_d, optim_d, hps.train.learning_rate, epoch, os.path.join(hps.model_dir, model_name+"_"+"D_{}.pth".format(global_step)))
+        
+        copy(os.path.join(hps.model_dir, model_name+"_"+"G_{}.pth".format(global_step)), copy_target)
+        copy(os.path.join(hps.model_dir, model_name+"_"+"D_{}.pth".format(global_step)), copy_target)
+        if global_step != 0:
+          os.remove(os.path.join(hps.model_dir, model_name+"_"+"G_{}.pth".format(global_step-hps.train.eval_interval)))
+          os.remove(os.path.join(hps.model_dir, model_name+"_"+"D_{}.pth".format(global_step-hps.train.eval_interval)))
+          
     global_step += 1
   
   if rank == 0:
