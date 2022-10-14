@@ -1,4 +1,4 @@
-model_name = "Eriko"
+global model_name = "MAHFAERAC"
 
 import os
 import json
