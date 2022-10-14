@@ -1,5 +1,5 @@
 model_name = "MAHFAERAC"
-copy_target = "COPY_TARGET"
+copy_target = "COPY_TARGET_NAME"
 
 import os
 import json
