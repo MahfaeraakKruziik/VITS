@@ -1,4 +1,4 @@
-global model_name = "MAHFAERAC"
+model_name = "MAHFAERAC"
 
 import os
 import json
